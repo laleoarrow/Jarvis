@@ -1,0 +1,26 @@
+{
+  "name": "jarvis-wecom",
+  "version": "1.0.0",
+  "description": "Jarvis – Personal secretary via WeCom (企业微信) self-built app callback service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "xml2js": "^0.6.2"
+  },
+  "keywords": [
+    "wecom",
+    "wechat-work",
+    "enterprise-wechat",
+    "personal-assistant",
+    "jarvis"
+  ],
+  "author": "laleoarrow",
+  "license": "MIT"
+}
