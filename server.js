@@ -209,11 +209,17 @@ function buildReplyXml(toUser, fromUser, textContent) {
 
 /* ─── start ───────────────────────────────────────────────── */
 
-app.listen(PORT, () => {
-  console.log(`\n🤖 Jarvis is live on port ${PORT}`);
-  console.log(`   Health:   http://localhost:${PORT}/`);
-  console.log(`   Callback: http://localhost:${PORT}/wecom/callback`);
-  console.log(`   Debug:    http://localhost:${PORT}/debug/items\n`);
-  console.log(`   AI Provider: ${process.env.AI_PROVIDER || 'none (rule-based fallback)'}`);
-  console.log(`   CorpID: ${CORP_ID ? CORP_ID.slice(0, 6) + '***' : '⚠️  NOT SET'}\n`);
-});
+// Only listen when running directly (not on Vercel serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`\n🤖 Jarvis is live on port ${PORT}`);
+    console.log(`   Health:   http://localhost:${PORT}/`);
+    console.log(`   Callback: http://localhost:${PORT}/wecom/callback`);
+    console.log(`   Debug:    http://localhost:${PORT}/debug/items\n`);
+    console.log(`   AI Provider: ${process.env.AI_PROVIDER || 'none (rule-based fallback)'}`);
+    console.log(`   CorpID: ${CORP_ID ? CORP_ID.slice(0, 6) + '***' : '⚠️  NOT SET'}\n`);
+  });
+}
+
+// Export for Vercel serverless & Render
+module.exports = app;
