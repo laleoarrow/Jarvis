@@ -1,7 +1,9 @@
 # 🤖 Jarvis – 企业微信个人秘书
 
 > 通过企业微信自建应用 + 微信插件，在微信中使用的个人秘书回调服务。
-> 部署到 [Render](https://render.com) 即可使用。
+> 已部署到 [Vercel](https://vercel.com)，也支持 [Render](https://render.com)。
+
+**🔗 线上地址**: [`https://jarvis-secretary-mvp.vercel.app`](https://jarvis-secretary-mvp.vercel.app)
 
 ---
 
@@ -11,7 +13,7 @@
 2. [技术架构](#技术架构)
 3. [快速开始](#快速开始)
    - [A. 企业微信侧配置](#a-企业微信侧配置)
-   - [B. Render 部署](#b-render-部署)
+   - [B. 部署（Vercel / Render）](#b-部署vercel--render)
    - [C. 回调 URL 验证](#c-回调-url-验证)
    - [D. 微信插件启用](#d-微信插件启用)
 4. [消息处理逻辑](#消息处理逻辑)
@@ -41,7 +43,7 @@
 ```
 微信 → 企业微信(微信插件) → WeCom Server
                                 ↓ HTTPS POST (encrypted XML)
-                         Render (Node.js)
+                         Vercel / Render (Node.js)
                            ├─ wecom-crypto.js  ← AES-256-CBC 解密/加密
                            ├─ classifier.js    ← 消息分类
                            ├─ commands.js      ← 指令路由
@@ -93,79 +95,74 @@
 
 1. 应用详情页 → 下滑到「接收消息」→「设置API接收」
 2. 填写：
-   - **URL**: `https://<your-service>.onrender.com/wecom/callback`
-   - **Token**: 随机字符串（32位推荐，自己生成）
-   - **EncodingAESKey**: 点「随机获取」自动生成 43 位字符串
+   - **URL**: `https://jarvis-secretary-mvp.vercel.app/wecom/callback`
+   - **Token**: 与 Vercel 环境变量 `WECOM_TOKEN` 一致
+   - **EncodingAESKey**: 与 Vercel 环境变量 `WECOM_AES_KEY` 一致
 3. 先不要点保存（URL 必须在线才能验证通过）
 
 > 📸 **截图位置③**：「接收消息服务器配置」页面（URL/Token/AESKey 需打码）
 
 ---
 
-### B. Render 部署
+### B. 部署（Vercel / Render）
 
-#### B1. Fork / 导入仓库
+#### 方案一：Vercel（推荐 ✅ 已部署）
 
-1. 前往 [Render Dashboard](https://dashboard.render.com)
-2. 「New +」→「Web Service」
-3. 连接 GitHub →  选择 `laleoarrow/Jarvis` 仓库
+当前项目已部署到 Vercel：`https://jarvis-secretary-mvp.vercel.app`
 
-#### B2. 配置构建
+##### B1. 导入仓库
+
+1. 前往 [Vercel Dashboard](https://vercel.com/dashboard)
+2. 「Add New...」→「Project」
+3. 从 GitHub 导入 `laleoarrow/Jarvis`
+
+##### B2. 配置
 
 | 设置项 | 值 |
 |-------|-----|
-| Name | `jarvis-wecom` (或自定义) |
-| Region | Singapore (离中国最近) |
-| Branch | `main` |
-| Runtime | `Node` |
-| Build Command | `npm install` |
-| Start Command | `npm start` |
-| Instance Type | `Free` |
+| Framework Preset | `Express` (或 Other) |
+| Root Directory | `./` |
+| Node.js Version | `18.x` |
 
-#### B3. 设置环境变量
+##### B3. 环境变量（已配置）
 
-在 Render 的 Environment 页面添加：
+| Key | 说明 |
+|-----|------|
+| `WECOM_CORP_ID` | 企业ID |
+| `WECOM_TOKEN` | 回调 Token |
+| `WECOM_AES_KEY` | EncodingAESKey (43位) |
+| `WECOM_SECRET` | 应用 Secret |
+| `WECOM_AGENT_ID` | 应用 AgentID |
+| `AI_PROVIDER` | `none` / `github` / `openai` |
 
-| Key | Value | 说明 |
-|-----|-------|------|
-| `WECOM_CORP_ID` | `ww...` | A2 步骤获取的企业ID |
-| `WECOM_TOKEN` | `abc...` | A5 步骤填写的 Token（必须一致） |
-| `WECOM_AES_KEY` | `xyz...` | A5 步骤的 EncodingAESKey（43位，必须一致） |
-| `AI_PROVIDER` | `none` | 可选: `github` / `openai` / `none` |
+> 📸 **截图位置④**：Vercel 环境变量配置页（值打码）
 
-> 📸 **截图位置④**：Render 环境变量配置页（值打码）
+##### B4. 部署完成
 
-#### B4. 部署
+推送到 `main` 分支即自动部署。
 
-1. 点击 「Create Web Service」
-2. 等待构建完成
-3. 部署成功后，Render 分配域名：`https://<service>.onrender.com`
+> 📸 **截图位置⑤**：Vercel 部署成功页 / 访问 `/` 返回 "Jarvis is alive"
 
-> 📸 **截图位置⑤**：Render Logs 显示 "Jarvis is live" 的页面
+#### 方案二：Render（备选）
 
-#### B5. ⚠️ 免费实例休眠
-
-Render 免费实例 **15 分钟无请求后会休眠**。
-
-在企业微信验证 URL 之前，**先手动访问一次**唤醒服务：
-
-```
-curl https://<service>.onrender.com/
-# 应返回: ok – Jarvis is alive 🤖
-```
+1. [Render Dashboard](https://dashboard.render.com) → New → Web Service
+2. 连接 GitHub → `laleoarrow/Jarvis`
+3. Build: `npm install`，Start: `npm start`
+4. 添加相同环境变量
+5. ⚠️ 免费实例会休眠，验 URL 前先访问 `/` 唤醒
 
 ---
 
 ### C. 回调 URL 验证
 
-1. 确保 Render 服务已唤醒（访问 `/` 返回 ok）
+1. 确保服务已部署（访问 `/` 返回 `ok – Jarvis is alive 🤖`）
 2. 回到企业微信后台 → A5 步骤的「接收消息」配置页面
 3. 确认 URL / Token / EncodingAESKey 均正确
 4. 点击「保存」→ 企业微信会发一个 GET 请求验证
 5. 如果一切正确，会提示「保存成功」
 
 **常见问题**：
-- ❌ "URL 超时"：免费实例休眠了，先访问 `/` 唤醒再保存
+- ❌ "URL 超时"：Vercel 通常不会，Render 免费实例需先唤醒
 - ❌ "签名错误"：Token 或 EncodingAESKey 不一致，请检查
 - ❌ "解密失败"：CorpID 环境变量填错，或 AES Key 有误
 
@@ -302,13 +299,12 @@ NEXT: 回复 完成 1 / 延期 1 YYYY-MM-DD HH:mm / 1
 
 ### 当前限制
 
-- ⚠️ **内存存储**：数据保存在进程内存中，Render 免费实例重启后数据丢失
-- ⚠️ **免费实例休眠**：15 分钟无请求后休眠，首次消息可能延迟
+- ⚠️ **内存存储**：数据保存在进程内存中，Vercel serverless 函数每次调用独立，数据不持久（后续需接入持久化存储如 SQLite / Supabase / Google Sheets）
 - ⚠️ **不发送文件**：ICS 以文本形式返回，用户需手动复制导入
 
 ### 后续扩展
 
-- [ ] 持久化存储（SQLite / Supabase / Google Sheets）
+- [ ] 持久化存储（SQLite / Supabase / Google Sheets / Upstash Redis）
 - [ ] access_token 获取 + 主动推送消息
 - [ ] ICS 文件附件发送（需上传素材接口）
 - [ ] 定时提醒（Cron job）
@@ -326,8 +322,8 @@ NEXT: 回复 完成 1 / 延期 1 YYYY-MM-DD HH:mm / 1
 | ① | 企业ID (CorpID) | 企业微信后台 → 我的企业 → 页面底部 |
 | ② | 自建应用详情页 | 应用管理 → Jarvis 应用 → AgentID + Secret 入口 |
 | ③ | 接收消息服务器配置 | 应用详情 → 接收消息 → API 接收（URL/Token/AESKey 打码）|
-| ④ | Render 环境变量 | Render Dashboard → Environment（值打码）|
-| ⑤ | Render 部署成功日志 | Render Dashboard → Logs → "Jarvis is live" |
+| ④ | Vercel 环境变量 | Vercel Dashboard → Settings → Environment Variables（值打码）|
+| ⑤ | 部署成功 | Vercel Dashboard → 访问 `/` 返回 "Jarvis is alive" |
 | ⑥ | 微信插件二维码 | 企业微信后台 → 微信插件 → 邀请关注 |
 | ⑦ | 微信侧入口 | 微信消息列表 → 企业微信入口 |
 
