@@ -83,15 +83,7 @@
 3. 可见范围：选择**仅自己**
 4. 创建后进入应用详情页
 
-#### A4. 获取 AgentID 和 Secret
-
-1. 应用详情页顶部可见 **AgentID**
-2. 点击 Secret 后面的「查看」
-3. Secret 会发送到「企业微信团队」的会话中，打开企业微信 App 查看
-
-> 📸 **截图位置②**：自建应用详情页（显示 AgentID + Secret 入口；Secret 值不要截图！）
-
-#### A5. 配置接收消息服务器（先部署后再来）
+#### A4. 配置接收消息服务器（先部署后再来）
 
 1. 应用详情页 → 下滑到「接收消息」→「设置API接收」
 2. 填写：
@@ -131,8 +123,6 @@
 | `WECOM_CORP_ID` | 企业ID |
 | `WECOM_TOKEN` | 回调 Token |
 | `WECOM_AES_KEY` | EncodingAESKey (43位) |
-| `WECOM_SECRET` | 应用 Secret |
-| `WECOM_AGENT_ID` | 应用 AgentID |
 | `AI_PROVIDER` | `none` / `github` / `openai` |
 
 > 📸 **截图位置④**：Vercel 环境变量配置页（值打码）
@@ -320,7 +310,7 @@ NEXT: 回复 完成 1 / 延期 1 YYYY-MM-DD HH:mm / 1
 | # | 截图内容 | 位置 |
 |---|---------|------|
 | ① | 企业ID (CorpID) | 企业微信后台 → 我的企业 → 页面底部 |
-| ② | 自建应用详情页 | 应用管理 → Jarvis 应用 → AgentID + Secret 入口 |
+| ② | 自建应用详情页 | 应用管理 → Jarvis 应用 |
 | ③ | 接收消息服务器配置 | 应用详情 → 接收消息 → API 接收（URL/Token/AESKey 打码）|
 | ④ | Vercel 环境变量 | Vercel Dashboard → Settings → Environment Variables（值打码）|
 | ⑤ | 部署成功 | Vercel Dashboard → 访问 `/` 返回 "Jarvis is alive" |
